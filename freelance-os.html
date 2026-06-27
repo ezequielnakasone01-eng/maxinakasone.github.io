@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreelanceOS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070e;--bg2:#0c0c12;--bg3:#14141f;
+  --card:#14141f;--card2:#1c1c2a;
+  --border:#2a2418;--border2:#3d3420;
+  --text:#ede8d8;--text2:#8a7d55;--text3:#5a5035;
+  --accent:#d4a843;--accent2:#f0c96a;--accent3:#8b6914;
+  --green:#a3c46a;--red:#e07060;--amber:#f0c96a;--blue:#7aadcc;
+  --pink:#c4906a;--cyan:#8abcb0;
+  --r:12px;--r2:8px;--r3:20px;
+}
+html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+/* Sidebar */
+.sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.logo{padding:22px 20px 18px;border-bottom:1px solid var(--border)}
+.logo-title{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.5px}
+.logo-title span{color:var(--accent)}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+.nav{padding:10px 0;flex:1;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--text2);transition:all .15s;font-size:13px;font-weight:500;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(124,108,240,.12);color:var(--accent2);border-left-color:var(--accent)}
+.nav-icon{font-size:15px;width:20px;text-align:center}
+.nav-section{padding:10px 20px 4px;font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border)}
+.dolar-widget{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px}
+.dolar-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.dolar-row{display:flex;align-items:center;gap:6px}
+.dolar-val{font-size:15px;font-weight:700;color:var(--green)}
+.dolar-edit{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;margin-left:auto;padding:2px 6px;border-radius:4px;transition:.15s}
+.dolar-edit:hover{background:var(--border);color:var(--text)}
+.dolar-input{background:var(--bg2);border:1px solid var(--accent);color:var(--text);border-radius:4px;padding:2px 6px;width:80px;font-size:14px;font-weight:700;outline:none;display:none}
+/* Main */
+.main{flex:1;overflow-y:auto;background:var(--bg)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10}
+.page-title{font-size:20px;font-weight:700;color:var(--text)}
+.page-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r2);border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent3);transform:translateY(-1px)}
+.btn-ghost{background:var(--card);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--card2);color:var(--text)}
+.btn-danger{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+.btn-danger:hover{background:rgba(248,113,113,.25)}
+.btn-success{background:rgba(74,222,128,.15);color:var(--green);border:1px solid rgba(74,222,128,.3)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.content{padding:22px 28px}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:.2s}
+.kpi-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.kpi-card.green::before{background:var(--green)}
+.kpi-card.purple::before{background:var(--accent)}
+.kpi-card.blue::before{background:var(--blue)}
+.kpi-card.amber::before{background:var(--amber)}
+.kpi-card.red::before{background:var(--red)}
+.kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-1px;line-height:1}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:5px}
+.kpi-icon{position:absolute;right:14px;top:14px;font-size:20px;opacity:.2}
+.kpi-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.kpi-badge.up{background:rgba(74,222,128,.2);color:var(--green)}
+.kpi-badge.down{background:rgba(248,113,113,.2);color:var(--red)}
+/* Meta progress */
+.meta-bar-wrap{margin-top:8px}
+.meta-bar-bg{background:var(--bg3);border-radius:4px;height:5px;overflow:hidden}
+.meta-bar-fill{height:100%;border-radius:4px;transition:width .5s}
+.meta-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px}
+/* Charts */
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:20px}
+.charts-grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.chart-sub{font-size:11px;color:var(--text3);margin-bottom:14px}
+.chart-wrap{position:relative;width:100%}
+/* Projection card */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.proj-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:4px}
+.proj-val{font-size:18px;font-weight:800;color:var(--text)}
+.proj-sub{font-size:11px;color:var(--text3);margin-top:4px}
+/* Table */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.filter-select{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:var(--r2);padding:7px 12px;font-size:13px;outline:none;cursor:pointer;transition:.15s}
+.filter-select:hover{border-color:var(--border2)}
+.filter-select:focus{border-color:var(--accent)}
+.search-wrap{position:relative;flex:1;max-width:260px}
+.search-input{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:var(--r2);padding:7px 12px 7px 32px;font-size:13px;outline:none;width:100%;transition:.15s}
+.search-input:focus{border-color:var(--accent)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px}
+.filter-count{margin-left:auto;font-size:12px;color:var(--text3)}
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--bg3);padding:9px 13px;text-align:left;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:700;white-space:nowrap;cursor:pointer;user-select:none;transition:.15s}
+thead th:hover{color:var(--text2)}
+thead th.sort-asc::after{content:' ↑';color:var(--accent)}
+thead th.sort-desc::after{content:' ↓';color:var(--accent)}
+tbody tr{border-top:1px solid var(--border);transition:.15s}
+tbody tr:hover{background:rgba(124,108,240,.05)}
+td{padding:10px 13px;white-space:nowrap;font-size:13px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-ugct,.badge-ugc{background:rgba(96,165,250,.15);color:#93c5fd}
+.badge-creativos{background:rgba(167,139,250,.15);color:#c4b5fd}
+.badge-landing{background:rgba(74,222,128,.15);color:#86efac}
+.badge-otro{background:rgba(251,191,36,.15);color:#fcd34d}
+.badge-cobrado{background:rgba(74,222,128,.15);color:#86efac}
+.badge-pendiente{background:rgba(251,191,36,.2);color:#fcd34d}
+.badge-proceso{background:rgba(96,165,250,.15);color:#93c5fd}
+.badge-vencido{background:rgba(248,113,113,.2);color:#fca5a5}
+.actions-cell{display:flex;gap:4px}
+.icon-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;font-size:13px;transition:.15s}
+.icon-btn:hover.edit{color:var(--accent2);background:rgba(124,108,240,.15)}
+.icon-btn:hover.del{color:var(--red);background:rgba(248,113,113,.15)}
+.totals-row td{background:rgba(124,108,240,.08);font-weight:700;border-top:2px solid var(--border2);color:var(--text)}
+.totals-row td:first-child{color:var(--text3);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.empty-state{padding:50px 20px;text-align:center;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.4}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:var(--r3);padding:26px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.modal-title{font-size:16px;font-weight:700;color:var(--text)}
+.modal-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px;line-height:1;transition:.15s}
+.modal-close:hover{color:var(--text)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.form-input,.form-select,.form-textarea{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:var(--r2);padding:9px 12px;font-size:13px;outline:none;width:100%;transition:.15s;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,108,240,.15)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-select option{background:var(--bg2)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-link-row{display:flex;gap:8px}
+.form-link-row .form-input{flex:1}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+/* Client cards */
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:.2s}
+.client-card:hover{border-color:var(--border2)}
+.client-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;margin-bottom:12px}
+.client-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.client-brand{font-size:12px;color:var(--text3);margin-bottom:12px}
+.client-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.client-stat{background:var(--bg3);border-radius:var(--r2);padding:8px 10px}
+.client-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.client-stat-val{font-size:14px;font-weight:700;color:var(--text)}
+.client-actions{display:flex;gap:8px;flex-wrap:wrap}
+.client-notes{background:var(--bg3);border-radius:var(--r2);padding:10px;margin-bottom:12px;font-size:12px;color:var(--text2);border-left:3px solid var(--accent);display:none}
+.client-notes.has-content{display:block}
+.doc-link-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent2);text-decoration:none;background:rgba(124,108,240,.1);padding:5px 10px;border-radius:var(--r2);border:1px solid rgba(124,108,240,.2);transition:.15s;cursor:pointer}
+.doc-link-btn:hover{background:rgba(124,108,240,.2)}
+/* Cobros page */
+.cobros-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.alert-card{background:var(--card);border:1px solid;border-radius:var(--r);padding:16px 18px}
+.alert-card.danger{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05)}
+.alert-card.warning{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.05)}
+.alert-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.alert-val{font-size:22px;font-weight:800;margin:6px 0}
+.cobro-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border)}
+.cobro-row:first-child{border-top:none}
+.cobro-cliente{font-size:13px;font-weight:600;color:var(--text)}
+.cobro-meta{font-size:11px;color:var(--text3)}
+.cobro-amount{font-size:13px;font-weight:700}
+.cobro-amount.vencido{color:var(--red)}
+.cobro-amount.pendiente{color:var(--amber)}
+/* Presupuestador */
+.presup-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.presup-form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.presup-preview{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.presup-result{background:var(--bg3);border-radius:var(--r2);padding:16px;margin-top:16px;text-align:center}
+.presup-total{font-size:32px;font-weight:800;color:var(--green);letter-spacing:-1px}
+.presup-total-usd{font-size:16px;color:var(--text2);margin-top:4px}
+/* PDF preview */
+.pdf-preview{background:#fff;color:#111;border-radius:var(--r);padding:32px;font-size:13px;line-height:1.6}
+.pdf-preview h1{font-size:22px;font-weight:800;color:#111;margin-bottom:4px}
+.pdf-preview .pdf-sub{color:#666;font-size:12px;margin-bottom:24px}
+.pdf-preview table{width:100%;border-collapse:collapse;margin:16px 0}
+.pdf-preview td,.pdf-preview th{padding:8px 12px;border-bottom:1px solid #eee;font-size:12px}
+.pdf-preview th{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;font-weight:600;background:#f8f8f8}
+.pdf-preview .pdf-total{font-size:16px;font-weight:800;color:#111;text-align:right;margin-top:12px;padding-top:12px;border-top:2px solid #111}
+.pdf-preview .pdf-footer{margin-top:24px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px}
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px}
+.tab{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;transition:.15s;margin-bottom:-1px}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+/* Pages */
+.page{display:none}.page.active{display:block}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:12px 18px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;transform:translateY(80px);opacity:0;transition:all .25s;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success .toast-dot{background:var(--green)}
+.toast.error .toast-dot{background:var(--red)}
+.toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+/* Print */
+@media print{
+  body{background:#fff!important}
+  .no-print{display:none!important}
+  .print-only{display:block!important}
+  .pdf-preview{box-shadow:none;border:none;padding:0}
+}
+.print-only{display:none}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-grid,.charts-grid2,.presup-layout,.cobros-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-title">Freelance<span>OS</span></div>
+    <div class="logo-sub">Panel de control</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="setPage('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="setPage('trabajos')"><span class="nav-icon">💼</span> Trabajos</div>
+    <div class="nav-item" onclick="setPage('clientes')"><span class="nav-icon">👥</span> Clientes</div>
+    <div class="nav-item" onclick="setPage('cobros')"><span class="nav-icon">💳</span> Cobros <span class="nav-badge" id="badge-cobros" style="display:none">0</span></div>
+    <div class="nav-item" onclick="setPage('ecom')"><span class="nav-icon">🛒</span> Ecom Tests</div>
+    <div class="nav-item" onclick="setPage('suscripciones')"><span class="nav-icon">💸</span> Suscripciones</div>
+    <div class="nav-section" style="margin-top:8px">Herramientas</div>
+    <div class="nav-item" onclick="setPage('presupuestador')"><span class="nav-icon">🧮</span> Presupuestador</div>
+    <div class="nav-item" onclick="setPage('graficos')"><span class="nav-icon">📈</span> Gráficos</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="dolar-widget">
+      <div class="dolar-label">💵 Dólar blue</div>
+      <div class="dolar-row">
+        <div class="dolar-val">$<span id="dolar-num">1445</span></div>
+        <button class="dolar-edit" onclick="toggleDolarEdit()" title="Editar">✏️</button>
+      </div>
+      <input type="number" class="dolar-input" id="dolar-input" placeholder="1445" onkeydown="dolarKey(event)" onblur="saveDolar()">
+    </div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main" id="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar">
+    <div><div class="page-title">Dashboard <span style="font-size:12px;color:var(--accent);font-weight:400" id="build-indicator">cargando...</span></div><div class="page-sub" id="dash-date-sub">Resumen general</div></div>
+    <div class="topbar-actions">
+      <select class="filter-select" id="dash-month-filter" onchange="if(!_populating)renderDashboard()"><option value="all">Todos los meses</option></select>
+      <button class="btn btn-ghost btn-sm" onclick="openMetaModal()">🎯 Meta mensual</button>
+      <button class="btn btn-primary" onclick="openModal()">＋ Nuevo trabajo</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="kpi-grid">
+      <div class="kpi-card green">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-label">Total pesos</div>
+        <div class="kpi-value" id="kpi-pesos">$0</div>
+        <div class="kpi-sub" id="kpi-pesos-sub">—</div>
+        <div class="meta-bar-wrap" id="meta-pesos-bar" style="display:none">
+          <div class="meta-bar-bg"><div class="meta-bar-fill" id="meta-pesos-fill" style="background:var(--green);width:0%"></div></div>
+          <div class="meta-bar-label"><span id="meta-pesos-label">—</span><span id="meta-pesos-pct">0%</span></div>
+        </div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-icon">💵</div>
+        <div class="kpi-label">Total USD</div>
+        <div class="kpi-value" id="kpi-usd">$0</div>
+        <div class="kpi-sub" id="kpi-usd-sub">—</div>
+        <div class="meta-bar-wrap" id="meta-usd-bar" style="display:none">
+          <div class="meta-bar-bg"><div class="meta-bar-fill" id="meta-usd-fill" style="background:var(--accent);width:0%"></div></div>
+          <div class="meta-bar-label"><span id="meta-usd-label">—</span><span id="meta-usd-pct">0%</span></div>
+        </div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-icon">🎨</div>
+        <div class="kpi-label">Creativos</div>
+        <div class="kpi-value" id="kpi-creativos">0</div>
+        <div class="kpi-sub" id="kpi-creativos-sub">—</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-icon">📋</div>
+        <div class="kpi-label">Trabajos</div>
+        <div class="kpi-value" id="kpi-trabajos">0</div>
+        <div class="kpi-sub" id="kpi-trabajos-sub">—</div>
+      </div>
+    </div>
+    <div class="proj-grid" id="proj-grid" style="display:none">
+      <div class="proj-card"><div class="proj-label">Proyección del mes (USD)</div><div class="proj-val" id="proj-usd">—</div><div class="proj-sub" id="proj-usd-sub">—</div></div>
+      <div class="proj-card"><div class="proj-label">Proyección del mes (Pesos)</div><div class="proj-val" id="proj-pesos">—</div><div class="proj-sub" id="proj-pesos-sub">—</div></div>
+      <div class="proj-card"><div class="proj-label">Días restantes del mes</div><div class="proj-val" id="proj-dias">—</div><div class="proj-sub" id="proj-dias-sub">—</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Ingresos por mes</div>
+        <div class="chart-sub">Pesos y USD acumulados mensualmente</div>
+        <div class="chart-wrap" style="height:250px"><canvas id="chartMonthly" role="img" aria-label="Ingresos mensuales"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Por servicio</div>
+        <div class="chart-sub">Distribución de ingresos</div>
+        <div class="chart-wrap" style="height:250px"><canvas id="chartServicio" role="img" aria-label="Por servicio"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-grid2">
+      <div class="chart-card">
+        <div class="chart-title">Top clientes — Pesos</div>
+        <div class="chart-sub">Facturación acumulada</div>
+        <div class="chart-wrap" id="chartClienteWrap" style="height:200px"><canvas id="chartCliente" role="img" aria-label="Por cliente"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Creativos por cliente</div>
+        <div class="chart-sub">Unidades entregadas</div>
+        <div class="chart-wrap" id="chartCreativosWrap" style="height:200px"><canvas id="chartCreativos" role="img" aria-label="Creativos por cliente"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">USD por mes</div>
+        <div class="chart-sub">Dólares generados</div>
+        <div class="chart-wrap" style="height:200px"><canvas id="chartUsdMes" role="img" aria-label="USD por mes"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRABAJOS -->
+<div class="page" id="page-trabajos">
+  <div class="topbar">
+    <div><div class="page-title">Trabajos</div><div class="page-sub">Todos los registros</div></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-primary" onclick="openModal()">＋ Nuevo trabajo</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="Buscar..." oninput="renderTable()">
+      </div>
+      <select class="filter-select" id="filter-mes" onchange="if(!_populating)renderTable()"><option value="">Todos los meses</option></select>
+      <select class="filter-select" id="filter-servicio" onchange="if(!_populating)renderTable()">
+        <option value="">Todos los servicios</option>
+        <option>Creativos</option><option>UGC T</option><option>Landing</option><option>Otro</option>
+      </select>
+      <select class="filter-select" id="filter-estado" onchange="if(!_populating)renderTable()">
+        <option value="">Todos los estados</option>
+        <option value="cobrado">Cobrado</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="proceso">En proceso</option>
+      </select>
+      <select class="filter-select" id="filter-cliente" onchange="if(!_populating)renderTable()"><option value="">Todos los clientes</option></select>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('fecha')">Fecha</th>
+              <th onclick="sortBy('servicio')">Servicio</th>
+              <th onclick="sortBy('cliente')">Cliente</th>
+              <th onclick="sortBy('cantidad')">Cant.</th>
+              <th onclick="sortBy('pesos')">Pesos</th>
+              <th onclick="sortBy('usd')">USD</th>
+              <th onclick="sortBy('estado')">Estado</th>
+              <th>Vence</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTES -->
+<div class="page" id="page-clientes">
+  <div class="topbar">
+    <div><div class="page-title">Clientes</div><div class="page-sub">Perfil y documentos</div></div>
+  </div>
+  <div class="content">
+    <div class="client-grid" id="client-grid"></div>
+  </div>
+</div>
+
+<!-- COBROS -->
+<div class="page" id="page-cobros">
+  <div class="topbar">
+    <div><div class="page-title">Cobros</div><div class="page-sub">Pendientes y vencidos</div></div>
+  </div>
+  <div class="content">
+    <div class="cobros-grid">
+      <div class="alert-card danger">
+        <div class="alert-title" style="color:var(--red)">🔴 Vencidos</div>
+        <div class="alert-val" id="cobro-vencido-total" style="color:var(--red)">$0</div>
+        <div style="font-size:11px;color:var(--text3)" id="cobro-vencido-count">0 trabajos</div>
+      </div>
+      <div class="alert-card warning">
+        <div class="alert-title" style="color:var(--amber)">🟡 Pendientes</div>
+        <div class="alert-val" id="cobro-pendiente-total" style="color:var(--amber)">$0</div>
+        <div style="font-size:11px;color:var(--text3)" id="cobro-pendiente-count">0 trabajos</div>
+      </div>
+    </div>
+    <div class="table-card" id="cobros-table-card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Vence</th><th>Pesos</th><th>USD</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="cobros-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRESUPUESTADOR -->
+<div class="page" id="page-presupuestador">
+  <div class="topbar">
+    <div><div class="page-title">Presupuestador</div><div class="page-sub">Calculá y generá presupuestos</div></div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="printPresup()">🖨 Imprimir / PDF</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="presup-layout">
+      <div class="presup-form-card no-print">
+        <div class="chart-title" style="margin-bottom:18px">Calculadora de precio</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Cliente</label>
+            <input type="text" class="form-input" id="p-cliente" placeholder="Nombre del cliente" list="p-clientes-list" oninput="calcPresup()">
+            <datalist id="p-clientes-list"></datalist>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Servicio</label>
+            <select class="form-select" id="p-servicio" onchange="calcPresup()">
+              <option>Creativos</option><option>UGC T</option><option>Landing</option><option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cantidad</label>
+            <input type="number" class="form-input" id="p-cantidad" value="15" min="1" oninput="calcPresup()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Precio USD por unidad</label>
+            <input type="number" class="form-input" id="p-precio-usd" placeholder="5" step="0.5" oninput="calcPresup()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Precio ARS por unidad</label>
+            <input type="number" class="form-input" id="p-precio-ars" placeholder="7200" oninput="calcPresup()">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Notas / descripción del servicio</label>
+            <textarea class="form-textarea" id="p-descripcion" placeholder="Detallá el servicio incluido..." oninput="calcPresup()"></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Fecha de vencimiento del presupuesto</label>
+            <input type="date" class="form-input" id="p-vencimiento" oninput="calcPresup()">
+          </div>
+        </div>
+        <div class="presup-result" id="presup-result">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Total estimado</div>
+          <div class="presup-total" id="presup-total-ars">$0</div>
+          <div class="presup-total-usd" id="presup-total-usd">U$D 0</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px" id="presup-hist">—</div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <button class="btn btn-primary" style="flex:1" onclick="savePresupAsWork()">💼 Guardar como trabajo</button>
+        </div>
+      </div>
+
+      <div class="presup-preview" id="presup-preview-wrap">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">Vista previa del presupuesto</div>
+        <div class="pdf-preview" id="pdf-preview">
+          <h1 id="pdf-title">Presupuesto</h1>
+          <div class="pdf-sub" id="pdf-sub">—</div>
+          <table>
+            <thead><tr><th>Descripción</th><th>Cant.</th><th>P. Unit (USD)</th><th>P. Unit (ARS)</th><th>Total ARS</th></tr></thead>
+            <tbody id="pdf-table-body"></tbody>
+          </table>
+          <div class="pdf-total" id="pdf-total">Total: $0</div>
+          <div class="pdf-footer">Presupuesto válido hasta <span id="pdf-vence">—</span>. Precios en pesos argentinos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GRÁFICOS -->
+<div class="page" id="page-graficos">
+  <div class="topbar">
+    <div><div class="page-title">Gráficos</div><div class="page-sub">Análisis detallado</div></div>
+    <div class="topbar-actions">
+      <select class="filter-select" id="graficos-month-filter" onchange="if(!_populating)renderGraficos()"><option value="all">Todos los meses</option></select>
+    </div>
+  </div>
+  <div class="content">
+    <div class="charts-grid" style="margin-bottom:14px">
+      <div class="chart-card">
+        <div class="chart-title">Evolución de ingresos (Pesos)</div>
+        <div class="chart-sub">Acumulado mensual en pesos</div>
+        <div class="chart-wrap" style="height:270px"><canvas id="chartG1" role="img" aria-label="Evolución pesos"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Proporción USD vs Pesos directos</div>
+        <div class="chart-sub">Peso relativo de cada moneda</div>
+        <div class="chart-wrap" style="height:270px"><canvas id="chartG2" role="img" aria-label="Proporción monedas"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-grid2">
+      <div class="chart-card">
+        <div class="chart-title">Ingresos por servicio</div>
+        <div class="chart-sub">Total en pesos por tipo</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartG3" role="img" aria-label="Por servicio"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Trabajos por mes</div>
+        <div class="chart-sub">Cantidad de registros</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartG4" role="img" aria-label="Trabajos por mes"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Ticket promedio (USD)</div>
+        <div class="chart-sub">Por trabajo registrado</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartG5" role="img" aria-label="Ticket promedio"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-grid2">
+      <div class="chart-card">
+        <div class="chart-title">Histórico de tarifas</div>
+        <div class="chart-sub">Precio USD por creativo a lo largo del tiempo</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartTarifas" role="img" aria-label="Histórico tarifas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Estado de trabajos</div>
+        <div class="chart-sub">Cobrados vs pendientes</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartEstados" role="img" aria-label="Estados"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">USD acumulado</div>
+        <div class="chart-sub">Suma acumulativa de dólares</div>
+        <div class="chart-wrap" style="height:230px"><canvas id="chartAcum" role="img" aria-label="USD acumulado"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ecom Page -->
+<div class="page" id="page-ecom">
+  <div class="topbar">
+    <div><div class="page-title">🛒 Ecom Tests</div><div class="page-sub" id="ecom-sub">Testeos de productos</div></div>
+    <div class="topbar-actions">
+      <select class="filter-select" id="ecom-filter-plataforma" onchange="if(!_populating)renderEcom()">
+        <option value="">Todas las plataformas</option>
+        <option>Meta</option><option>TikTok</option><option>Google</option>
+      </select>
+      <select class="filter-select" id="ecom-filter-estado" onchange="if(!_populating)renderEcom()">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="escalando">Escalando</option>
+        <option value="pausado">Pausado</option>
+        <option value="muerto">Muerto</option>
+      </select>
+      <button class="btn btn-primary" onclick="openEcomModal()">+ Nuevo test</button>
+    </div>
+  </div>
+  <div class="page-content">
+    <div id="ecom-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:24px"></div>
+  </div>
+</div>
+
+<!-- Suscripciones Page -->
+<div class="page" id="page-suscripciones">
+  <div class="topbar">
+    <div><div class="page-title">💸 Suscripciones</div><div class="page-sub" id="sus-sub">Gastos fijos mensuales</div></div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openSusModal()">+ Nueva suscripción</button>
+    </div>
+  </div>
+  <div class="page-content" style="padding:24px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px">
+      <div class="card" style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Total mensual</div>
+        <div style="font-size:22px;font-weight:800;color:var(--red)" id="sus-total-mes">U$D 0</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Total anual</div>
+        <div style="font-size:22px;font-weight:800;color:var(--amber)" id="sus-total-anual">U$D 0</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Próximo vencimiento</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text)" id="sus-proximo">—</div>
+      </div>
+    </div>
+    <div id="sus-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px"></div>
+  </div>
+</div>
+
+<!-- Suscripciones Modal -->
+<div class="modal-overlay" id="sus-modal-overlay" onclick="closeSusModalOutside(event)" style="display:none">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title" id="sus-modal-title">Nueva suscripción</div>
+      <button class="modal-close" onclick="closeSusModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Nombre *</label><input class="form-input" id="sm-nombre" placeholder="Ej: Claude Pro"></div>
+      <div class="form-group"><label class="form-label">Categoría</label>
+        <select class="form-select" id="sm-categoria">
+          <option value="ia">🤖 IA</option>
+          <option value="storage">☁️ Storage</option>
+          <option value="diseño">🎨 Diseño</option>
+          <option value="marketing">📣 Marketing</option>
+          <option value="dev">💻 Dev</option>
+          <option value="otro">📦 Otro</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Monto</label><input class="form-input" id="sm-monto" type="number" min="0" step="0.01" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Moneda</label>
+          <select class="form-select" id="sm-moneda">
+            <option value="usd">U$D</option>
+            <option value="ars">$ARS</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Frecuencia</label>
+          <select class="form-select" id="sm-frecuencia">
+            <option value="mensual">Mensual</option>
+            <option value="anual">Anual</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Día de cobro</label><input class="form-input" id="sm-dia" type="number" min="1" max="31" placeholder="1-31"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notas</label><input class="form-input" id="sm-notas" placeholder="Ej: plan team, shared con Nico..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeSusModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveSus()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ecom Modal -->
+<div class="modal-overlay" id="ecom-modal-overlay" onclick="closeEcomModalOutside(event)" style="display:none">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title" id="ecom-modal-title">Nuevo test</div>
+      <button class="modal-close" onclick="closeEcomModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Nombre del test *</label><input class="form-input" id="em-nombre" placeholder="Ej: Mochila negra verano"></div>
+      <div class="form-group"><label class="form-label">Producto / Nicho</label><input class="form-input" id="em-producto" placeholder="Ej: Mochilas urbanas"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Plataforma</label>
+          <select class="form-select" id="em-plataforma">
+            <option>Meta</option><option>TikTok</option><option>Google</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-select" id="em-estado">
+            <option value="activo">Activo</option>
+            <option value="escalando">Escalando</option>
+            <option value="pausado">Pausado</option>
+            <option value="muerto">Muerto</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Presupuesto ads (U$D)</label><input class="form-input" id="em-presupuesto" type="number" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Ventas (cantidad)</label><input class="form-input" id="em-ventas" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Revenue total (U$D)</label><input class="form-input" id="em-revenue" type="number" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Costo por venta (U$D)</label><input class="form-input" id="em-costo" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Fecha inicio</label><input class="form-input" id="em-fecha-inicio" type="date"></div>
+        <div class="form-group"><label class="form-label">Fecha fin</label><input class="form-input" id="em-fecha-fin" type="date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notas</label><textarea class="form-input" id="em-notas" rows="2" placeholder="Observaciones, creativos usados..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEcomModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEcomTest()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- Work Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Nuevo trabajo</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form id="work-form" onsubmit="saveWork(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Fecha</label>
+          <input type="date" class="form-input" id="f-fecha" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Servicio</label>
+          <select class="form-select" id="f-servicio" required>
+            <option value="">Seleccionar...</option>
+            <option>Creativos</option><option>UGC T</option><option>Landing</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Cliente</label>
+          <input type="text" class="form-input" id="f-cliente" placeholder="Ej: Rogelio (iHelfy)" required list="clientes-list">
+          <datalist id="clientes-list"></datalist>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pesos ($ARS)</label>
+          <input type="number" class="form-input" id="f-pesos" placeholder="108000" required min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">USD</label>
+          <input type="number" class="form-input" id="f-usd" placeholder="75" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cantidad / Creativos</label>
+          <input type="number" class="form-input" id="f-cantidad" placeholder="15" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="f-estado">
+            <option value="cobrado">✅ Cobrado</option>
+            <option value="pendiente">⏳ Pendiente</option>
+            <option value="proceso">🔄 En proceso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha de vencimiento</label>
+          <input type="date" class="form-input" id="f-vencimiento">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notas</label>
+          <input type="text" class="form-input" id="f-notas" placeholder="Observaciones...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="save-btn">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Client Edit Modal -->
+<div class="modal-overlay" id="client-modal-overlay" onclick="if(event.target===this)closeClientModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="client-modal-title">Editar cliente</div>
+      <button class="modal-close" onclick="closeClientModal()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Notas / Brief</label>
+        <textarea class="form-textarea" id="cm-notas" placeholder="Instrucciones, preferencias, contexto del cliente..."></textarea>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Link a documento (Drive, Notion, Docs...)</label>
+        <div class="form-link-row">
+          <input type="url" class="form-input" id="cm-doclink" placeholder="https://docs.google.com/...">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="openDocLink()">↗</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contacto</label>
+        <input type="text" class="form-input" id="cm-contacto" placeholder="+54 11 ...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tarifa base (USD/unit)</label>
+        <input type="number" class="form-input" id="cm-tarifa" placeholder="5" step="0.5">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-ghost" onclick="closeClientModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" onclick="saveClientMeta()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Meta Modal -->
+<div class="modal-overlay" id="meta-modal-overlay" onclick="if(event.target===this)closeMetaModal()">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <div class="modal-title">🎯 Meta mensual</div>
+      <button class="modal-close" onclick="closeMetaModal()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Meta en USD</label>
+        <input type="number" class="form-input" id="meta-usd" placeholder="3000" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meta en Pesos</label>
+        <input type="number" class="form-input" id="meta-pesos" placeholder="4000000" min="0">
+      </div>
+      <div class="form-group full" style="font-size:12px;color:var(--text3)">
+        La meta se aplica al mes actual. Se muestra como barra de progreso en el dashboard.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-ghost" onclick="closeMetaModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" onclick="saveMeta()">Guardar meta</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete -->
+<div class="modal-overlay" id="confirm-overlay">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <div style="font-size:36px;margin-bottom:12px">🗑️</div>
+    <div class="modal-title" style="margin-bottom:8px">Eliminar trabajo</div>
+    <div style="color:var(--text2);font-size:13px;margin-bottom:4px">¿Seguro que querés eliminarlo?</div>
+    <div style="color:var(--text3);font-size:12px;margin-bottom:20px" id="confirm-detail"></div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
+
+<script>
+// ==================== DATA ====================
+const STORAGE_KEY = 'freelanceos_data';
+const CLIENT_KEY = 'freelanceos_clients';
+const META_KEY = 'freelanceos_meta';
+const DOLAR_KEY = 'freelanceos_dolar';
+const ECOM_KEY = 'freelanceos_ecom';
+const SUS_KEY = 'freelanceos_sus';
+const DATA_VERSION = 6;
+const BUILD_TS = '20260627_RESET2';
+
+const SEED = [
+  {id:uid(),fecha:'2026-06-06',servicio:'Landing',cliente:'Tomas (mochilas)',cantidad:1,pesos:100000,usd:69,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-11',servicio:'UGC T',cliente:'Fran Asensio (Jinos)',cantidad:18,pesos:360000,usd:248,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-13',servicio:'Creativos',cliente:'Matias (Reloj)',cantidad:6,pesos:74500,usd:51,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-18',servicio:'Creativos',cliente:'Nico (Espuma)',cantidad:6,pesos:50000,usd:35,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-19',servicio:'Creativos',cliente:'Laure (Croma)',cantidad:6,pesos:50000,usd:35,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-20',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-23',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-23',servicio:'UGC T',cliente:'Fran Asensio (Jinos)',cantidad:30,pesos:600000,usd:413,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-24',servicio:'Creativos',cliente:'Laure (Croma)',cantidad:12,pesos:100000,usd:69,estado:'cobrado',vencimiento:'',notas:''},
+  {id:uid(),fecha:'2026-06-26',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+];
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+// SEED directo — sin localStorage para el display inicial
+let data = JSON.parse(JSON.stringify(SEED));
+let clientMeta = {};
+let metaGoals = {};
+
+let ecomTests = JSON.parse(localStorage.getItem(ECOM_KEY)||'[]');
+const _susRaw = localStorage.getItem(SUS_KEY);
+let susData = _susRaw !== null ? JSON.parse(_susRaw) : [
+  {id:'su1',nombre:'Claude Pro',categoria:'ia',monto:20,moneda:'usd',frecuencia:'mensual',dia:1,notas:''},
+  {id:'su2',nombre:'ChatGPT Plus',categoria:'ia',monto:20,moneda:'usd',frecuencia:'mensual',dia:5,notas:''},
+  {id:'su3',nombre:'iCloud',categoria:'storage',monto:2.99,moneda:'usd',frecuencia:'mensual',dia:15,notas:'50GB'},
+];
+let editingSusId = null;
+let editingEcomId = null;
+
+let editingId = null;
+let deleteId = null;
+let editingClient = null;
+let sortCol = 'fecha';
+let sortDir = -1;
+let dolarBlue = parseInt(localStorage.getItem(DOLAR_KEY)||'1445');
+let charts = {};
+
+function load(){
+  // Intentar cargar datos del usuario (solo si hay más de los SEED items)
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw !== null) {
+      const p = JSON.parse(raw);
+      if(p && Array.isArray(p.items)) data = p.items;
+    }
+    const cm = localStorage.getItem(CLIENT_KEY); if(cm) clientMeta = JSON.parse(cm);
+    const mg = localStorage.getItem(META_KEY); if(mg) metaGoals = JSON.parse(mg);
+    dolarBlue = parseInt(localStorage.getItem(DOLAR_KEY)||'1445');
+  } catch(e) {}
+  document.getElementById('dolar-num').textContent = dolarBlue.toLocaleString('es-AR');
+}
+
+function save(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({__version:DATA_VERSION,items:data}));
+    localStorage.setItem(DOLAR_KEY,dolarBlue);
+    localStorage.setItem(CLIENT_KEY,JSON.stringify(clientMeta));
+    localStorage.setItem(META_KEY,JSON.stringify(metaGoals));
+  }catch(e){}
+}
+
+// ==================== NAV ====================
+function setPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const pages=['dashboard','trabajos','clientes','cobros','presupuestador','graficos'];
+  const items=document.querySelectorAll('.nav-item');
+  items[pages.indexOf(p)]&&items[pages.indexOf(p)].classList.add('active');
+  if(p==='dashboard')renderDashboard();
+  else if(p==='trabajos'){populateFilters();renderTable();}
+  else if(p==='clientes')renderClientes();
+  else if(p==='cobros')renderCobros();
+  else if(p==='presupuestador')initPresup();
+  else if(p==='graficos')renderGraficos();
+  else if(p==='ecom')renderEcom();
+  else if(p==='suscripciones')renderSus();
+}
+
+// ==================== FILTERS ====================
+let _populating=false;
+function populateFilters(){
+  _populating=true;
+  const months=[...new Set(data.map(d=>d.fecha.slice(0,7)))].sort();
+  const clients=[...new Set(data.map(d=>d.cliente))].sort();
+  ['dash-month-filter','graficos-month-filter'].forEach(id=>{
+    const sel=document.getElementById(id);
+    const cur=sel.value;
+    sel.innerHTML='<option value="all">Todos los meses</option>';
+    months.forEach(m=>{
+      const [y,mo]=m.split('-');
+      const lbl=new Date(+y,+mo-1,1).toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+      const o=document.createElement('option');o.value=m;o.textContent=lbl.charAt(0).toUpperCase()+lbl.slice(1);sel.appendChild(o);
+    });
+    if(cur)sel.value=cur;
+  });
+  const fm=document.getElementById('filter-mes');
+  if(fm){const cur=fm.value;fm.innerHTML='<option value="">Todos los meses</option>';months.forEach(m=>{const [y,mo]=m.split('-');const lbl=new Date(+y,+mo-1,1).toLocaleDateString('es-AR',{month:'long',year:'numeric'});const o=document.createElement('option');o.value=m;o.textContent=lbl.charAt(0).toUpperCase()+lbl.slice(1);fm.appendChild(o)});if(cur)fm.value=cur;}
+  const fc=document.getElementById('filter-cliente');
+  if(fc){const cur=fc.value;fc.innerHTML='<option value="">Todos los clientes</option>';clients.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;fc.appendChild(o)});if(cur)fc.value=cur;}
+  const dl=document.getElementById('clientes-list');
+  if(dl){dl.innerHTML='';clients.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o)});}
+  const pdl=document.getElementById('p-clientes-list');
+  if(pdl){pdl.innerHTML='';clients.forEach(c=>{const o=document.createElement('option');o.value=c;pdl.appendChild(o)});}
+  updateCobrosbage();
+  _populating=false;
+}
+
+function getFiltered(monthVal){
+  let d=[...data];
+  if(monthVal&&monthVal!=='all')d=d.filter(x=>x.fecha.startsWith(monthVal));
+  return d;
+}
+
+function getTableFiltered(){
+  const search=document.getElementById('search-input').value.toLowerCase();
+  const mes=document.getElementById('filter-mes').value;
+  const serv=document.getElementById('filter-servicio').value;
+  const estado=document.getElementById('filter-estado').value;
+  const cli=document.getElementById('filter-cliente').value;
+  return data.filter(d=>{
+    if(mes&&!d.fecha.startsWith(mes))return false;
+    if(serv&&d.servicio!==serv)return false;
+    if(estado&&d.estado!==estado)return false;
+    if(cli&&d.cliente!==cli)return false;
+    if(search&&!d.cliente.toLowerCase().includes(search)&&!d.servicio.toLowerCase().includes(search)&&!(d.notas||'').toLowerCase().includes(search))return false;
+    return true;
+  });
+}
+
+// ==================== DASHBOARD ====================
+const PALETTE=['#7c6cf0','#4ade80','#60a5fa','#fbbf24','#f472b6','#22d3ee','#f87171','#a78bfa'];
+
+function monthLabel(m){const[y,mo]=m.split('-');return new Date(+y,+mo-1,1).toLocaleDateString('es-AR',{month:'short',year:'2-digit'})}
+function groupByMonth(d){
+  const map={};
+  d.forEach(x=>{const m=x.fecha.slice(0,7);if(!map[m])map[m]={pesos:0,usd:0,count:0,creativos:0};map[m].pesos+=x.pesos;map[m].usd+=x.usd||0;map[m].count++;map[m].creativos+=x.cantidad||0;});
+  return map;
+}
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function renderDashboard(){
+  const monthVal=document.getElementById('dash-month-filter').value;
+  const d=getFiltered(monthVal);
+  const totalPesos=d.reduce((a,b)=>a+b.pesos,0);
+  const totalUsd=d.reduce((a,b)=>a+(b.usd||0),0);
+  const totalCreativos=d.reduce((a,b)=>a+(b.cantidad||0),0);
+  const clients=[...new Set(d.map(x=>x.cliente))];
+
+  // Compare with prev month
+  const now=new Date();
+  const curMonth=now.toISOString().slice(0,7);
+  const prevDate=new Date(now.getFullYear(),now.getMonth()-1,1);
+  const prevMonth=prevDate.toISOString().slice(0,7);
+  const prevData=data.filter(x=>x.fecha.startsWith(prevMonth));
+  const prevPesos=prevData.reduce((a,b)=>a+b.pesos,0);
+  const prevUsd=prevData.reduce((a,b)=>a+(b.usd||0),0);
+
+  function badge(cur,prev){
+    if(!prev)return'';
+    const pct=Math.round(((cur-prev)/prev)*100);
+    const cls=pct>=0?'up':'down';
+    return`<span class="kpi-badge ${cls}">${pct>=0?'+':''}${pct}%</span>`;
+  }
+
+  const isCurrentMonth=monthVal===curMonth||monthVal==='all';
+  document.getElementById('kpi-pesos').innerHTML='$'+totalPesos.toLocaleString('es-AR')+(isCurrentMonth?badge(totalPesos,prevPesos):'');
+  document.getElementById('kpi-usd').innerHTML='U$D '+totalUsd.toLocaleString('es-AR')+(isCurrentMonth?badge(totalUsd,prevUsd):'');
+  document.getElementById('kpi-creativos').textContent=totalCreativos;
+  document.getElementById('kpi-trabajos').textContent=d.length;
+  document.getElementById('kpi-pesos-sub').textContent=clients.length+' clientes · '+d.length+' trabajos';
+  document.getElementById('kpi-usd-sub').textContent='Cotización $'+dolarBlue.toLocaleString()+'/USD';
+  document.getElementById('kpi-creativos-sub').textContent='Prom. '+(d.length?Math.round(totalCreativos/d.length):0)+' por trabajo';
+  document.getElementById('kpi-trabajos-sub').textContent=[...new Set(d.map(x=>x.servicio))].join(', ');
+
+  // Meta bars
+  const meta=metaGoals[curMonth]||{};
+  if(meta.targetUsd){
+    const curMonthUsd=data.filter(x=>x.fecha.startsWith(curMonth)).reduce((a,b)=>a+(b.usd||0),0);
+    const pct=Math.min(100,Math.round((curMonthUsd/meta.targetUsd)*100));
+    document.getElementById('meta-usd-bar').style.display='block';
+    document.getElementById('meta-usd-fill').style.width=pct+'%';
+    document.getElementById('meta-usd-label').textContent='Meta U$D '+meta.targetUsd.toLocaleString();
+    document.getElementById('meta-usd-pct').textContent=pct+'%';
+  } else document.getElementById('meta-usd-bar').style.display='none';
+  if(meta.targetPesos){
+    const curMonthPesos=data.filter(x=>x.fecha.startsWith(curMonth)).reduce((a,b)=>a+b.pesos,0);
+    const pct=Math.min(100,Math.round((curMonthPesos/meta.targetPesos)*100));
+    document.getElementById('meta-pesos-bar').style.display='block';
+    document.getElementById('meta-pesos-fill').style.width=pct+'%';
+    document.getElementById('meta-pesos-label').textContent='Meta $'+meta.targetPesos.toLocaleString('es-AR');
+    document.getElementById('meta-pesos-pct').textContent=pct+'%';
+  } else document.getElementById('meta-pesos-bar').style.display='none';
+
+  // Projection (current month only)
+  const curMonthData=data.filter(x=>x.fecha.startsWith(curMonth));
+  if(curMonthData.length>0&&(monthVal===curMonth||monthVal==='all')){
+    document.getElementById('proj-grid').style.display='grid';
+    const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+    const daysPassed=now.getDate();
+    const daysLeft=daysInMonth-daysPassed;
+    const curUsd=curMonthData.reduce((a,b)=>a+(b.usd||0),0);
+    const curP=curMonthData.reduce((a,b)=>a+b.pesos,0);
+    const projUsd=Math.round((curUsd/daysPassed)*daysInMonth);
+    const projP=Math.round((curP/daysPassed)*daysInMonth);
+    document.getElementById('proj-usd').textContent='U$D '+projUsd.toLocaleString('es-AR');
+    document.getElementById('proj-pesos').textContent='$'+projP.toLocaleString('es-AR');
+    document.getElementById('proj-dias').textContent=daysLeft;
+    document.getElementById('proj-usd-sub').textContent='Basado en '+curUsd+' USD en '+daysPassed+' días';
+    document.getElementById('proj-pesos-sub').textContent='Ritmo: $'+Math.round(curP/daysPassed).toLocaleString()+'/día';
+    document.getElementById('proj-dias-sub').textContent='De '+daysInMonth+' días totales del mes';
+  } else document.getElementById('proj-grid').style.display='none';
+
+  renderMonthlyChart(d);renderServicioChart(d);renderClienteChart(d);renderCreativosChart(d);renderUsdMesChart(d);
+}
+
+function renderMonthlyChart(d){
+  destroyChart('monthly');
+  const map=groupByMonth(d);const months=Object.keys(map).sort();
+  const ctx=document.getElementById('chartMonthly').getContext('2d');
+  charts['monthly']=new Chart(ctx,{type:'bar',data:{labels:months.map(monthLabel),datasets:[{label:'Pesos',data:months.map(m=>map[m].pesos),backgroundColor:'rgba(124,108,240,.75)',borderRadius:6,borderSkipped:false},{label:'USD (en pesos)',data:months.map(m=>map[m].usd*dolarBlue),backgroundColor:'rgba(74,222,128,.5)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9090b0',font:{size:11}}}},scales:{x:{ticks:{color:'#5a5a80'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5a5a80',callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(255,255,255,.06)'}}}}});
+}
+function renderServicioChart(d){
+  destroyChart('servicio');
+  const map={};d.forEach(x=>{map[x.servicio]=(map[x.servicio]||0)+x.pesos;});
+  const labels=Object.keys(map);
+  const ctx=document.getElementById('chartServicio').getContext('2d');
+  charts['servicio']=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data:labels.map(k=>map[k]),backgroundColor:PALETTE.slice(0,labels.length),borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#9090b0',font:{size:11},padding:10,boxWidth:12}}}}});
+}
+function renderClienteChart(d){
+  destroyChart('cliente');
+  const map={};d.forEach(x=>{map[x.cliente]=(map[x.cliente]||0)+x.pesos;});
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const wrap=document.getElementById('chartClienteWrap');
+  wrap.style.height=Math.max(160,sorted.length*40+40)+'px';
+  const ctx=document.getElementById('chartCliente').getContext('2d');
+  charts['cliente']=new Chart(ctx,{type:'bar',data:{labels:sorted.map(x=>x[0].split('(')[0].trim()),datasets:[{label:'Pesos',data:sorted.map(x=>x[1]),backgroundColor:PALETTE.slice(0,sorted.length),borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80',callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#9090b0',font:{size:11}},grid:{display:false}}}}});
+}
+function renderCreativosChart(d){
+  destroyChart('creativos');
+  const map={};d.forEach(x=>{map[x.cliente]=(map[x.cliente]||0)+(x.cantidad||0);});
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const wrap=document.getElementById('chartCreativosWrap');
+  wrap.style.height=Math.max(160,sorted.length*40+40)+'px';
+  const ctx=document.getElementById('chartCreativos').getContext('2d');
+  charts['creativos']=new Chart(ctx,{type:'bar',data:{labels:sorted.map(x=>x[0].split('(')[0].trim()),datasets:[{label:'Creativos',data:sorted.map(x=>x[1]),backgroundColor:'rgba(96,165,250,.7)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#9090b0',font:{size:11}},grid:{display:false}}}}});
+}
+function renderUsdMesChart(d){
+  destroyChart('usdmes');
+  const map=groupByMonth(d);const months=Object.keys(map).sort();
+  const ctx=document.getElementById('chartUsdMes').getContext('2d');
+  charts['usdmes']=new Chart(ctx,{type:'line',data:{labels:months.map(monthLabel),datasets:[{label:'USD',data:months.map(m=>map[m].usd),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.1)',tension:.4,fill:true,pointBackgroundColor:'#4ade80',pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5a5a80',callback:v=>'U$D '+v},grid:{color:'rgba(255,255,255,.06)'}}}}});
+}
+
+// ==================== TABLE ====================
+function sortBy(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=-1;}renderTable();}
+
+function renderTable(){
+  const d=getTableFiltered();
+  d.sort((a,b)=>{let va=a[sortCol],vb=b[sortCol];if(sortCol==='fecha')return va<vb?sortDir:-sortDir;if(typeof va==='number')return(va-vb)*sortDir;return String(va||'').localeCompare(String(vb||''))*sortDir;});
+  document.getElementById('filter-count').textContent=d.length+' registro'+(d.length!==1?'s':'');
+  const thead=document.querySelector('#page-trabajos thead tr');
+  if(thead){thead.querySelectorAll('th').forEach(th=>{th.classList.remove('sort-asc','sort-desc');});const cols=['fecha','servicio','cliente','cantidad','pesos','usd','estado'];const idx=cols.indexOf(sortCol);if(idx>=0)thead.children[idx].classList.add(sortDir>0?'sort-asc':'sort-desc');}
+  const tbody=document.getElementById('table-body');
+  const today=new Date().toISOString().slice(0,10);
+  if(!d.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Sin registros</div></div></td></tr>';return;}
+  const tP=d.reduce((a,b)=>a+b.pesos,0),tU=d.reduce((a,b)=>a+(b.usd||0),0),tC=d.reduce((a,b)=>a+(b.cantidad||0),0);
+  tbody.innerHTML=d.map(row=>{
+    const isVencido=row.vencimiento&&row.vencimiento<today&&row.estado!=='cobrado';
+    const estadoClass=isVencido?'vencido':row.estado==='cobrado'?'cobrado':row.estado==='proceso'?'proceso':'pendiente';
+    const estadoLabel=isVencido?'⚠️ Vencido':row.estado==='cobrado'?'✅ Cobrado':row.estado==='proceso'?'🔄 Proceso':'⏳ Pendiente';
+    return`<tr>
+      <td style="color:var(--text2)">${formatDate(row.fecha)}</td>
+      <td><span class="badge badge-${row.servicio.toLowerCase().replace(/ /g,'')}">${row.servicio}</span></td>
+      <td style="font-weight:600">${row.cliente}</td>
+      <td style="color:var(--text2)">${row.cantidad||'—'}</td>
+      <td style="font-weight:700">$${row.pesos.toLocaleString('es-AR')}</td>
+      <td style="color:var(--green);font-weight:600">${row.usd?'U$D '+row.usd:'—'}</td>
+      <td><span class="badge badge-${estadoClass}">${estadoLabel}</span></td>
+      <td style="color:${isVencido?'var(--red)':'var(--text3)'};font-size:12px">${row.vencimiento?formatDate(row.vencimiento):'—'}</td>
+      <td><div class="actions-cell">
+        <button class="icon-btn edit" onclick="openEdit('${row.id}')" title="Editar">✏️</button>
+        <button class="icon-btn del" onclick="openDelete('${row.id}')" title="Eliminar">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('')+`<tr class="totals-row"><td>TOTAL</td><td></td><td></td><td>${tC}</td><td>$${tP.toLocaleString('es-AR')}</td><td>U$D ${tU.toLocaleString('es-AR')}</td><td></td><td></td><td></td></tr>`;
+}
+
+// ==================== CLIENTES ====================
+const AVATAR_COLORS=[['rgba(124,108,240,.2)','#a89cf5'],['rgba(74,222,128,.2)','#4ade80'],['rgba(96,165,250,.2)','#60a5fa'],['rgba(251,191,36,.2)','#fbbf24'],['rgba(244,114,182,.2)','#f472b6'],['rgba(34,211,238,.2)','#22d3ee']];
+function renderClientes(){
+  const map={};
+  data.forEach(d=>{if(!map[d.cliente])map[d.cliente]={pesos:0,usd:0,cantidad:0,trabajos:0,servicios:new Set()};map[d.cliente].pesos+=d.pesos;map[d.cliente].usd+=d.usd||0;map[d.cliente].cantidad+=d.cantidad||0;map[d.cliente].trabajos++;map[d.cliente].servicios.add(d.servicio);});
+  const sorted=Object.entries(map).sort((a,b)=>b[1].pesos-a[1].pesos);
+  const grid=document.getElementById('client-grid');
+  grid.innerHTML=sorted.map(([name,stats],i)=>{
+    const[bg,fg]=AVATAR_COLORS[i%AVATAR_COLORS.length];
+    const initials=name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const brand=name.match(/\(([^)]+)\)/)?.[1]||'';
+    const shortName=brand?name.replace(/\s*\([^)]+\)/,'').trim():name;
+    const meta=clientMeta[name]||{};
+    const services=[...stats.servicios].map(s=>`<span class="badge badge-${s.toLowerCase().replace(/ /g,'')}">${s}</span>`).join('');
+    const notesBlock=meta.notas?`<div class="client-notes has-content">${meta.notas}</div>`:`<div class="client-notes"></div>`;
+    const docBtn=meta.docLink?`<a class="doc-link-btn" href="${meta.docLink}" target="_blank" rel="noopener">📄 Ver documento</a>`:'';
+    const contactBtn=meta.contacto?`<span style="font-size:12px;color:var(--text3)">📞 ${meta.contacto}</span>`:'';
+    return`<div class="client-card">
+      <div class="client-avatar" style="background:${bg};color:${fg}">${initials}</div>
+      <div class="client-name">${shortName}</div>
+      <div class="client-brand">${brand||'Sin marca registrada'}</div>
+      ${notesBlock}
+      <div class="client-stats">
+        <div class="client-stat"><div class="client-stat-label">Pesos</div><div class="client-stat-val">$${Math.round(stats.pesos/1000)}K</div></div>
+        <div class="client-stat"><div class="client-stat-label">USD</div><div class="client-stat-val">U$D ${stats.usd}</div></div>
+        <div class="client-stat"><div class="client-stat-label">Creativos</div><div class="client-stat-val">${stats.cantidad}</div></div>
+        <div class="client-stat"><div class="client-stat-label">Trabajos</div><div class="client-stat-val">${stats.trabajos}</div></div>
+      </div>
+      <div style="margin-bottom:10px">${services}</div>
+      <div class="client-actions">
+        ${docBtn}
+        ${contactBtn}
+        <button class="btn btn-ghost btn-sm" onclick="openClientModal('${name.replace(/'/g,"\\'")}')">✏️ Editar perfil</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ==================== COBROS ====================
+function updateCobrosbadge(){
+  const today=new Date().toISOString().slice(0,10);
+  const pending=data.filter(d=>d.estado!=='cobrado');
+  const badge=document.getElementById('badge-cobros');
+  if(pending.length>0){badge.style.display='';badge.textContent=pending.length;}
+  else badge.style.display='none';
+}
+function updateCobrosbadge2(){updateCobrosbage();}
+function updateCobrosbage(){
+  const today=new Date().toISOString().slice(0,10);
+  const pending=data.filter(d=>d.estado!=='cobrado');
+  const badge=document.getElementById('badge-cobros');
+  if(pending.length>0){badge.style.display='';badge.textContent=pending.length;}
+  else badge.style.display='none';
+}
+function updateCobrosbadge(){
+  const pending=data.filter(d=>d.estado!=='cobrado');
+  const badge=document.getElementById('badge-cobros');
+  if(pending.length>0){badge.style.display='inline-block';badge.textContent=pending.length;}
+  else badge.style.display='none';
+}
+
+function renderCobros(){
+  const today=new Date().toISOString().slice(0,10);
+  const vencidos=data.filter(d=>d.estado!=='cobrado'&&d.vencimiento&&d.vencimiento<today);
+  const pendientes=data.filter(d=>d.estado==='pendiente'&&!(d.vencimiento&&d.vencimiento<today));
+  const enProceso=data.filter(d=>d.estado==='proceso'&&!(d.vencimiento&&d.vencimiento<today));
+  const allPending=[...vencidos,...pendientes,...enProceso];
+
+  const vP=vencidos.reduce((a,b)=>a+b.pesos,0);
+  const vU=vencidos.reduce((a,b)=>a+(b.usd||0),0);
+  const pP=pendientes.reduce((a,b)=>a+b.pesos,0)+enProceso.reduce((a,b)=>a+b.pesos,0);
+  const pU=pendientes.reduce((a,b)=>a+(b.usd||0),0)+enProceso.reduce((a,b)=>a+(b.usd||0),0);
+
+  document.getElementById('cobro-vencido-total').textContent='$'+vP.toLocaleString('es-AR')+' · U$D '+vU;
+  document.getElementById('cobro-vencido-count').textContent=vencidos.length+' trabajo'+(vencidos.length!==1?'s':'');
+  document.getElementById('cobro-pendiente-total').textContent='$'+pP.toLocaleString('es-AR')+' · U$D '+pU;
+  document.getElementById('cobro-pendiente-count').textContent=(pendientes.length+enProceso.length)+' trabajo'+(pendientes.length+enProceso.length!==1?'s':'');
+
+  const tbody=document.getElementById('cobros-body');
+  if(!allPending.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">Todo cobrado — sin pendientes</div></div></td></tr>';return;}
+  tbody.innerHTML=allPending.map(row=>{
+    const isV=row.vencimiento&&row.vencimiento<today;
+    const estadoLabel=isV?'⚠️ Vencido':row.estado==='proceso'?'🔄 Proceso':'⏳ Pendiente';
+    const estadoClass=isV?'vencido':row.estado==='proceso'?'proceso':'pendiente';
+    return`<tr>
+      <td style="font-weight:600">${row.cliente}</td>
+      <td><span class="badge badge-${row.servicio.toLowerCase().replace(/ /g,'')}">${row.servicio}</span></td>
+      <td style="color:var(--text2);font-size:12px">${formatDate(row.fecha)}</td>
+      <td style="color:${isV?'var(--red)':'var(--text3)'};font-size:12px">${row.vencimiento?formatDate(row.vencimiento):'—'}</td>
+      <td style="font-weight:700">$${row.pesos.toLocaleString('es-AR')}</td>
+      <td style="color:var(--green);font-weight:600">${row.usd?'U$D '+row.usd:'—'}</td>
+      <td><span class="badge badge-${estadoClass}">${estadoLabel}</span></td>
+      <td><button class="btn btn-success btn-sm" onclick="markCobrado('${row.id}')">✅ Cobrar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function markCobrado(id){
+  const row=data.find(d=>d.id===id);
+  if(row){row.estado='cobrado';row.vencimiento='';}
+  save();renderCobros();updateCobrosbage();toast('Marcado como cobrado ✓','success');
+}
+
+// ==================== PRESUPUESTADOR ====================
+function initPresup(){
+  populateFilters();
+  const v=new Date();v.setDate(v.getDate()+15);
+  document.getElementById('p-vencimiento').value=v.toISOString().slice(0,10);
+  calcPresup();
+}
+
+function calcPresup(){
+  const cliente=document.getElementById('p-cliente').value;
+  const servicio=document.getElementById('p-servicio').value;
+  const cantidad=parseInt(document.getElementById('p-cantidad').value)||0;
+  let precioUsd=parseFloat(document.getElementById('p-precio-usd').value)||0;
+  let precioArs=parseFloat(document.getElementById('p-precio-ars').value)||0;
+  const descripcion=document.getElementById('p-descripcion').value||servicio;
+  const vencimiento=document.getElementById('p-vencimiento').value;
+
+  // Historical average for suggestion
+  const histData=data.filter(d=>d.servicio===servicio&&d.cantidad>0&&d.usd>0);
+  const avgUsdPerUnit=histData.length?histData.reduce((a,b)=>a+(b.usd/b.cantidad),0)/histData.length:0;
+  const histText=avgUsdPerUnit?`Tarifa histórica: U$D ${avgUsdPerUnit.toFixed(2)}/unit (${histData.length} trabajos)`:'Sin historial para este servicio';
+
+  if(!precioUsd&&avgUsdPerUnit){precioUsd=parseFloat(avgUsdPerUnit.toFixed(2));document.getElementById('p-precio-usd').placeholder=precioUsd;}
+  if(!precioArs&&precioUsd)precioArs=Math.round(precioUsd*dolarBlue);
+
+  const totalArs=(precioArs||Math.round(precioUsd*dolarBlue))*cantidad;
+  const totalUsd=(precioUsd||precioArs/dolarBlue)*cantidad;
+
+  document.getElementById('presup-total-ars').textContent='$'+Math.round(totalArs).toLocaleString('es-AR');
+  document.getElementById('presup-total-usd').textContent='U$D '+totalUsd.toFixed(0);
+  document.getElementById('presup-hist').textContent=histText;
+
+  // Update PDF preview
+  document.getElementById('pdf-title').textContent='Presupuesto'+(cliente?' — '+cliente:'');
+  document.getElementById('pdf-sub').textContent='Servicio: '+servicio+' · '+new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+  const tbdy=document.getElementById('pdf-table-body');
+  tbdy.innerHTML=`<tr><td>${descripcion}</td><td>${cantidad}</td><td>U$D ${precioUsd.toFixed(2)||'—'}</td><td>$${(precioArs||Math.round(precioUsd*dolarBlue)).toLocaleString('es-AR')}</td><td>$${Math.round(totalArs).toLocaleString('es-AR')}</td></tr>`;
+  document.getElementById('pdf-total').textContent='Total: $'+Math.round(totalArs).toLocaleString('es-AR')+' (U$D '+Math.round(totalUsd)+')';
+  document.getElementById('pdf-vence').textContent=vencimiento?new Date(vencimiento+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}):'—';
+}
+
+function printPresup(){
+  const preview=document.getElementById('pdf-preview');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Presupuesto</title><style>body{font-family:'Segoe UI',sans-serif;padding:40px;color:#111;font-size:13px}h1{font-size:22px;font-weight:800;margin-bottom:4px}.sub{color:#666;font-size:12px;margin-bottom:24px}table{width:100%;border-collapse:collapse;margin:16px 0}td,th{padding:8px 12px;border-bottom:1px solid #eee;font-size:12px}th{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;background:#f8f8f8}.total{font-size:16px;font-weight:800;text-align:right;margin-top:12px;padding-top:12px;border-top:2px solid #111}.footer{margin-top:24px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px}</style></head><body>${preview.innerHTML}</body></html>`);
+  w.document.close();w.focus();w.print();
+}
+
+function savePresupAsWork(){
+  const cliente=document.getElementById('p-cliente').value.trim();
+  const servicio=document.getElementById('p-servicio').value;
+  const cantidad=parseInt(document.getElementById('p-cantidad').value)||0;
+  const precioUsd=parseFloat(document.getElementById('p-precio-usd').value)||0;
+  const precioArs=parseFloat(document.getElementById('p-precio-ars').value)||Math.round(precioUsd*dolarBlue);
+  const vencimiento=document.getElementById('p-vencimiento').value;
+  if(!cliente){toast('Completá el cliente primero','error');return;}
+  const row={id:uid(),fecha:new Date().toISOString().slice(0,10),servicio,cliente,cantidad,pesos:Math.round(precioArs*cantidad),usd:Math.round(precioUsd*cantidad),estado:'proceso',vencimiento,notas:'Generado desde presupuestador'};
+  data.push(row);save();populateFilters();updateCobrosbage();
+  toast('Guardado como trabajo en proceso ✓','success');
+}
+
+// ==================== GRÁFICOS ====================
+function renderGraficos(){
+  populateFilters();
+  const monthVal=document.getElementById('graficos-month-filter').value;
+  const d=getFiltered(monthVal);
+  ['g1','g2','g3','g4','g5','tarifas','estados','acum'].forEach(destroyChart);
+  const map=groupByMonth(d);const months=Object.keys(map).sort();
+
+  // G1 evolución pesos
+  const c1=document.getElementById('chartG1').getContext('2d');
+  charts['g1']=new Chart(c1,{type:'line',data:{labels:months.map(monthLabel),datasets:[{label:'Pesos',data:months.map(m=>map[m].pesos),borderColor:'#7c6cf0',backgroundColor:'rgba(124,108,240,.12)',tension:.4,fill:true,pointBackgroundColor:'#7c6cf0',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5a5a80',callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // G2 proporción monedas
+  const totalP=d.reduce((a,b)=>a+b.pesos,0);const totalUconv=d.reduce((a,b)=>a+(b.usd||0)*dolarBlue,0);
+  const c2=document.getElementById('chartG2').getContext('2d');
+  charts['g2']=new Chart(c2,{type:'doughnut',data:{labels:['Pesos directos','USD convertido'],datasets:[{data:[totalP,totalUconv],backgroundColor:['rgba(124,108,240,.8)','rgba(74,222,128,.8)'],borderWidth:0,hoverOffset:10}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#9090b0',font:{size:11},padding:14,boxWidth:12}}}}});
+
+  // G3 por servicio
+  const smap={};d.forEach(x=>{smap[x.servicio]=(smap[x.servicio]||0)+x.pesos;});
+  const c3=document.getElementById('chartG3').getContext('2d');
+  charts['g3']=new Chart(c3,{type:'bar',data:{labels:Object.keys(smap),datasets:[{label:'Pesos',data:Object.values(smap),backgroundColor:PALETTE.slice(0,Object.keys(smap).length),borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9090b0'},grid:{display:false}},y:{ticks:{color:'#5a5a80',callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // G4 trabajos por mes
+  const c4=document.getElementById('chartG4').getContext('2d');
+  charts['g4']=new Chart(c4,{type:'bar',data:{labels:months.map(monthLabel),datasets:[{label:'Trabajos',data:months.map(m=>map[m].count),backgroundColor:'rgba(251,191,36,.7)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9090b0'},grid:{display:false}},y:{ticks:{color:'#5a5a80',stepSize:1},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // G5 ticket promedio
+  const c5=document.getElementById('chartG5').getContext('2d');
+  charts['g5']=new Chart(c5,{type:'line',data:{labels:months.map(monthLabel),datasets:[{label:'Avg USD',data:months.map(m=>map[m].count?Math.round(map[m].usd/map[m].count):0),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,.1)',tension:.4,fill:true,pointBackgroundColor:'#fbbf24',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9090b0'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5a5a80',callback:v=>'U$D '+v},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // Tarifas históricas (precio USD por creativo)
+  const tarifaData=d.filter(x=>x.cantidad>0&&x.usd>0).map(x=>({fecha:x.fecha,usdPerUnit:parseFloat((x.usd/x.cantidad).toFixed(2)),cliente:x.cliente})).sort((a,b)=>a.fecha<b.fecha?-1:1);
+  const ct=document.getElementById('chartTarifas').getContext('2d');
+  charts['tarifas']=new Chart(ct,{type:'line',data:{labels:tarifaData.map(x=>formatDate(x.fecha)+' '+x.cliente.split(' ')[0]),datasets:[{label:'USD/unit',data:tarifaData.map(x=>x.usdPerUnit),borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,.1)',tension:.3,pointBackgroundColor:'#f472b6',pointRadius:5,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80',maxRotation:45,font:{size:10}},grid:{display:false}},y:{ticks:{color:'#5a5a80',callback:v=>'U$D '+v},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // Estados
+  const cobrados=d.filter(x=>x.estado==='cobrado').length;
+  const pendientes=d.filter(x=>x.estado==='pendiente').length;
+  const proceso=d.filter(x=>x.estado==='proceso').length;
+  const ce=document.getElementById('chartEstados').getContext('2d');
+  charts['estados']=new Chart(ce,{type:'doughnut',data:{labels:['Cobrado','Pendiente','En proceso'],datasets:[{data:[cobrados,pendientes,proceso],backgroundColor:['rgba(74,222,128,.8)','rgba(251,191,36,.8)','rgba(96,165,250,.8)'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#9090b0',font:{size:11},padding:10,boxWidth:12}}}}});
+
+  // USD acumulado
+  const sortedAll=d.slice().sort((a,b)=>a.fecha<b.fecha?-1:1);
+  let acum=0;const acumData=sortedAll.map(x=>{acum+=x.usd||0;return acum;});
+  const ca=document.getElementById('chartAcum').getContext('2d');
+  charts['acum']=new Chart(ca,{type:'line',data:{labels:sortedAll.map(x=>formatDate(x.fecha)),datasets:[{label:'USD acum.',data:acumData,borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.1)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#22d3ee'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a5a80',maxRotation:45,font:{size:10}},grid:{display:false}},y:{ticks:{color:'#5a5a80',callback:v=>'U$D '+v},grid:{color:'rgba(255,255,255,.06)'}}}}});
+}
+
+// ==================== MODAL TRABAJO ====================
+function openModal(){editingId=null;document.getElementById('modal-title').textContent='Nuevo trabajo';document.getElementById('save-btn').textContent='Guardar';document.getElementById('work-form').reset();document.getElementById('f-fecha').value=new Date().toISOString().slice(0,10);document.getElementById('f-estado').value='cobrado';document.getElementById('modal-overlay').classList.add('open');}
+function openEdit(id){
+  const row=data.find(d=>d.id===id);if(!row)return;
+  editingId=id;document.getElementById('modal-title').textContent='Editar trabajo';document.getElementById('save-btn').textContent='Actualizar';
+  document.getElementById('f-fecha').value=row.fecha;document.getElementById('f-servicio').value=row.servicio;document.getElementById('f-cliente').value=row.cliente;document.getElementById('f-pesos').value=row.pesos;document.getElementById('f-usd').value=row.usd||'';document.getElementById('f-cantidad').value=row.cantidad||'';document.getElementById('f-estado').value=row.estado||'cobrado';document.getElementById('f-vencimiento').value=row.vencimiento||'';document.getElementById('f-notas').value=row.notas||'';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+function saveWork(e){
+  e.preventDefault();
+  const row={id:editingId||uid(),fecha:document.getElementById('f-fecha').value,servicio:document.getElementById('f-servicio').value,cliente:document.getElementById('f-cliente').value.trim(),pesos:parseInt(document.getElementById('f-pesos').value)||0,usd:parseFloat(document.getElementById('f-usd').value)||0,cantidad:parseInt(document.getElementById('f-cantidad').value)||0,estado:document.getElementById('f-estado').value,vencimiento:document.getElementById('f-vencimiento').value,notas:document.getElementById('f-notas').value};
+  if(editingId){const idx=data.findIndex(d=>d.id===editingId);data[idx]=row;toast('Actualizado ✓','success');}
+  else{data.push(row);toast('Guardado ✓','success');}
+  save();populateFilters();closeModal();updateCobrosbage();
+  const active=document.querySelector('.page.active').id.replace('page-','');
+  if(active==='dashboard')renderDashboard();else if(active==='trabajos')renderTable();else if(active==='clientes')renderClientes();else if(active==='cobros')renderCobros();
+}
+
+// ==================== MODAL CLIENTE ====================
+function openClientModal(name){
+  editingClient=name;
+  document.getElementById('client-modal-title').textContent='Perfil — '+name;
+  const meta=clientMeta[name]||{};
+  document.getElementById('cm-notas').value=meta.notas||'';
+  document.getElementById('cm-doclink').value=meta.docLink||'';
+  document.getElementById('cm-contacto').value=meta.contacto||'';
+  document.getElementById('cm-tarifa').value=meta.tarifaBase||'';
+  document.getElementById('client-modal-overlay').classList.add('open');
+}
+function closeClientModal(){document.getElementById('client-modal-overlay').classList.remove('open');editingClient=null;}
+function saveClientMeta(){
+  if(!editingClient)return;
+  clientMeta[editingClient]={notas:document.getElementById('cm-notas').value,docLink:document.getElementById('cm-doclink').value,contacto:document.getElementById('cm-contacto').value,tarifaBase:parseFloat(document.getElementById('cm-tarifa').value)||0};
+  save();closeClientModal();renderClientes();toast('Perfil guardado ✓','success');
+}
+function openDocLink(){const url=document.getElementById('cm-doclink').value;if(url)window.open(url,'_blank');}
+
+// ==================== MODAL META ====================
+function openMetaModal(){
+  const curMonth=new Date().toISOString().slice(0,7);
+  const meta=metaGoals[curMonth]||{};
+  document.getElementById('meta-usd').value=meta.targetUsd||'';
+  document.getElementById('meta-pesos').value=meta.targetPesos||'';
+  document.getElementById('meta-modal-overlay').classList.add('open');
+}
+function closeMetaModal(){document.getElementById('meta-modal-overlay').classList.remove('open');}
+function saveMeta(){
+  const curMonth=new Date().toISOString().slice(0,7);
+  metaGoals[curMonth]={targetUsd:parseInt(document.getElementById('meta-usd').value)||0,targetPesos:parseInt(document.getElementById('meta-pesos').value)||0};
+  save();closeMetaModal();renderDashboard();toast('Meta guardada ✓','success');
+}
+
+// ==================== DELETE ====================
+function openDelete(id){deleteId=id;const row=data.find(d=>d.id===id);document.getElementById('confirm-detail').textContent=row?`${row.cliente} — ${row.servicio} — $${row.pesos.toLocaleString('es-AR')}`:'';document.getElementById('confirm-overlay').classList.add('open');}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('open');deleteId=null;}
+function confirmDelete(){data=data.filter(d=>d.id!==deleteId);save();closeConfirm();renderTable();populateFilters();updateCobrosbage();toast('Eliminado','error');}
+
+// ==================== EXPORT ====================
+function exportCSV(){
+  const rows=[['Fecha','Servicio','Cliente','Cantidad','Pesos','USD','Estado','Vencimiento','Notas']];
+  data.slice().sort((a,b)=>a.fecha<b.fecha?-1:1).forEach(d=>rows.push([d.fecha,d.servicio,d.cliente,d.cantidad||0,d.pesos,d.usd||0,d.estado,d.vencimiento||'',d.notas||'']));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);a.download='freelanceos_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  toast('CSV exportado ✓','success');
+}
+
+// ==================== DOLAR ====================
+function toggleDolarEdit(){const inp=document.getElementById('dolar-input');const disp=document.getElementById('dolar-val');if(inp.style.display==='block')saveDolar();else{inp.style.display='block';inp.value=dolarBlue;document.querySelector('.dolar-val').style.display='none';inp.focus();}}
+function saveDolar(){const inp=document.getElementById('dolar-input');const v=parseInt(inp.value);if(v>0){dolarBlue=v;localStorage.setItem(DOLAR_KEY,dolarBlue);document.getElementById('dolar-num').textContent=dolarBlue.toLocaleString('es-AR');toast('Cotización actualizada','success');}inp.style.display='none';document.querySelector('.dolar-val').style.display='';}
+function dolarKey(e){if(e.key==='Enter')saveDolar();if(e.key==='Escape'){document.getElementById('dolar-input').style.display='none';document.querySelector('.dolar-val').style.display='';}}
+
+// ==================== UTILS ====================
+function formatDate(s){if(!s)return'—';const[y,m,d]=s.split('-');return`${d}/${m}/${y.slice(2)}`;}
+let toastTimer;
+function toast(msg,type='success'){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.className='toast '+type;clearTimeout(toastTimer);setTimeout(()=>el.classList.add('show'),10);toastTimer=setTimeout(()=>el.classList.remove('show'),2800);}
+
+// ==================== ECOM ====================
+const ECOM_ESTADO_COLORS={activo:'var(--green)',escalando:'var(--accent2)',pausado:'var(--amber)',muerto:'var(--red)'};
+const ECOM_PLAT_ICONS={Meta:'📘',TikTok:'🎵',Google:'🔍'};
+
+function saveEcom(){localStorage.setItem(ECOM_KEY,JSON.stringify(ecomTests));}
+
+function renderEcom(){
+  const plat=document.getElementById('ecom-filter-plataforma').value;
+  const est=document.getElementById('ecom-filter-estado').value;
+  let d=[...ecomTests];
+  if(plat)d=d.filter(x=>x.plataforma===plat);
+  if(est)d=d.filter(x=>x.estado===est);
+  document.getElementById('ecom-sub').textContent=d.length+' test'+(d.length!==1?'s':'')+' · '+ecomTests.length+' total';
+  const grid=document.getElementById('ecom-grid');
+  if(!d.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text3)"><div style="font-size:40px;margin-bottom:12px">🛒</div><div style="font-size:15px">Sin tests todavía.<br>Agregá tu primer testeo.</div></div>';
+    return;
+  }
+  grid.innerHTML=d.map(t=>{
+    const roas=t.presupuesto>0?(t.revenue/t.presupuesto).toFixed(2):null;
+    const profit=t.revenue-(t.presupuesto||0)-(t.ventas||0)*(t.costo||0);
+    const color=ECOM_ESTADO_COLORS[t.estado]||'var(--text3)';
+    const icon=ECOM_PLAT_ICONS[t.plataforma]||'🌐';
+    const roasColor=roas>=2?'var(--green)':roas>=1?'var(--amber)':'var(--red)';
+    return`<div class="card" style="position:relative;border-top:3px solid ${color}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text)">${t.nombre}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">${t.producto||'—'}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:18px">${icon}</span>
+          <span style="font-size:11px;font-weight:700;color:${color};background:${color}22;border-radius:20px;padding:2px 10px;text-transform:uppercase">${t.estado}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase">Presup. Ads</div>
+          <div style="font-size:15px;font-weight:700;color:var(--red)">U$D ${(t.presupuesto||0).toLocaleString()}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase">Revenue</div>
+          <div style="font-size:15px;font-weight:700;color:var(--green)">U$D ${(t.revenue||0).toLocaleString()}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase">ROAS</div>
+          <div style="font-size:15px;font-weight:700;color:${roas?roasColor:'var(--text3)'}">${roas||'—'}x</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2);border-top:1px solid var(--border);padding-top:10px">
+        <span>🛍️ ${t.ventas||0} ventas${t.costo?' · $'+t.costo+' c/u':''}</span>
+        <span style="color:${profit>=0?'var(--green)':'var(--red)'};font-weight:700">${profit>=0?'+ ':''}U$D ${profit.toLocaleString()}</span>
+      </div>
+      ${t.notas?`<div style="margin-top:8px;font-size:12px;color:var(--text3);font-style:italic">${t.notas}</div>`:''}
+      <div style="display:flex;gap:6px;margin-top:12px">
+        <button class="icon-btn edit" onclick="openEcomEdit('${t.id}')" style="flex:1;justify-content:center">✏️ Editar</button>
+        <button class="icon-btn del" onclick="deleteEcom('${t.id}')" style="flex:1;justify-content:center">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openEcomModal(){
+  editingEcomId=null;
+  document.getElementById('ecom-modal-title').textContent='Nuevo test';
+  ['em-nombre','em-producto','em-notas'].forEach(id=>document.getElementById(id).value='');
+  ['em-presupuesto','em-ventas','em-revenue','em-costo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('em-fecha-inicio').value=new Date().toISOString().slice(0,10);
+  document.getElementById('em-fecha-fin').value='';
+  document.getElementById('em-estado').value='activo';
+  document.getElementById('em-plataforma').value='Meta';
+  document.getElementById('ecom-modal-overlay').style.display='flex';
+}
+
+function openEcomEdit(id){
+  const t=ecomTests.find(x=>x.id===id);if(!t)return;
+  editingEcomId=id;
+  document.getElementById('ecom-modal-title').textContent='Editar test';
+  document.getElementById('em-nombre').value=t.nombre||'';
+  document.getElementById('em-producto').value=t.producto||'';
+  document.getElementById('em-plataforma').value=t.plataforma||'Meta';
+  document.getElementById('em-estado').value=t.estado||'activo';
+  document.getElementById('em-presupuesto').value=t.presupuesto||'';
+  document.getElementById('em-ventas').value=t.ventas||'';
+  document.getElementById('em-revenue').value=t.revenue||'';
+  document.getElementById('em-costo').value=t.costo||'';
+  document.getElementById('em-fecha-inicio').value=t.fechaInicio||'';
+  document.getElementById('em-fecha-fin').value=t.fechaFin||'';
+  document.getElementById('em-notas').value=t.notas||'';
+  document.getElementById('ecom-modal-overlay').style.display='flex';
+}
+
+function closeEcomModal(){document.getElementById('ecom-modal-overlay').style.display='none';}
+function closeEcomModalOutside(e){if(e.target===document.getElementById('ecom-modal-overlay'))closeEcomModal();}
+
+function saveEcomTest(){
+  const nombre=document.getElementById('em-nombre').value.trim();
+  if(!nombre){toast('Nombre requerido','error');return;}
+  const row={
+    id:editingEcomId||uid(),
+    nombre,
+    producto:document.getElementById('em-producto').value.trim(),
+    plataforma:document.getElementById('em-plataforma').value,
+    estado:document.getElementById('em-estado').value,
+    presupuesto:parseFloat(document.getElementById('em-presupuesto').value)||0,
+    ventas:parseInt(document.getElementById('em-ventas').value)||0,
+    revenue:parseFloat(document.getElementById('em-revenue').value)||0,
+    costo:parseFloat(document.getElementById('em-costo').value)||0,
+    fechaInicio:document.getElementById('em-fecha-inicio').value,
+    fechaFin:document.getElementById('em-fecha-fin').value,
+    notas:document.getElementById('em-notas').value.trim(),
+  };
+  if(editingEcomId){ecomTests=ecomTests.map(x=>x.id===editingEcomId?row:x);}
+  else ecomTests.unshift(row);
+  saveEcom();closeEcomModal();renderEcom();toast('Test guardado ✓','success');
+}
+
+function deleteEcom(id){ecomTests=ecomTests.filter(x=>x.id!==id);saveEcom();renderEcom();toast('Test eliminado','error');}
+
+// ==================== SUSCRIPCIONES ====================
+const SUS_CAT={ia:{icon:'🤖',color:'#a89cf5'},storage:{icon:'☁️',color:'#60a5fa'},diseño:{icon:'🎨',color:'#f472b6'},marketing:{icon:'📣',color:'#fbbf24'},dev:{icon:'💻',color:'#4ade80'},otro:{icon:'📦',color:'#9090b0'}};
+
+function saveSusData(){localStorage.setItem(SUS_KEY,JSON.stringify(susData));}
+
+function susMonthlyUsd(s){
+  const m=s.moneda==='usd'?s.monto:s.monto/dolarBlue;
+  return s.frecuencia==='anual'?m/12:m;
+}
+
+function renderSus(){
+  const today=new Date();
+  const todayDay=today.getDate();
+  const totalMes=susData.reduce((a,s)=>a+susMonthlyUsd(s),0);
+  const totalAnual=totalMes*12;
+  document.getElementById('sus-total-mes').textContent='U$D '+totalMes.toFixed(2);
+  document.getElementById('sus-total-anual').textContent='U$D '+totalAnual.toFixed(2);
+
+  // Próximo vencimiento
+  const conDia=susData.filter(s=>s.dia);
+  if(conDia.length){
+    const next=conDia.map(s=>{
+      let d=s.dia-todayDay;if(d<=0)d+=30;
+      return{...s,dias:d};
+    }).sort((a,b)=>a.dias-b.dias)[0];
+    document.getElementById('sus-proximo').textContent=next.nombre+' en '+next.dias+' día'+(next.dias!==1?'s':'');
+  } else document.getElementById('sus-proximo').textContent='—';
+
+  document.getElementById('sus-sub').textContent=susData.length+' suscripción'+(susData.length!==1?'es':'')+' · U$D '+totalMes.toFixed(2)+'/mes';
+
+  const grid=document.getElementById('sus-grid');
+  if(!susData.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text3)"><div style="font-size:40px;margin-bottom:12px">💸</div><div>Sin suscripciones cargadas.</div></div>';
+    return;
+  }
+  const sorted=[...susData].sort((a,b)=>susMonthlyUsd(b)-susMonthlyUsd(a));
+  grid.innerHTML=sorted.map(s=>{
+    const cat=SUS_CAT[s.categoria]||SUS_CAT.otro;
+    const mensualUsd=susMonthlyUsd(s);
+    const diasStr=s.dia?(()=>{let d=s.dia-todayDay;if(d<=0)d+=30;return d===0?'Hoy':'En '+d+' días';})():'—';
+    const urgente=s.dia&&((s.dia-todayDay+30)%30)<=3;
+    return`<div class="card" style="border-left:3px solid ${cat.color}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:24px">${cat.icon}</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--text)">${s.nombre}</div>
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">${s.categoria}</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:800;color:var(--red)">${s.moneda==='usd'?'U$D':'$'}${s.monto}</div>
+          <div style="font-size:11px;color:var(--text3)">${s.frecuencia}</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;border-top:1px solid var(--border);padding-top:8px">
+        <span style="color:${urgente?'var(--amber)':'var(--text3)'}">📅 ${diasStr}</span>
+        <span style="color:var(--text2)">≈ U$D ${mensualUsd.toFixed(2)}/mes</span>
+      </div>
+      ${s.notas?`<div style="margin-top:6px;font-size:11px;color:var(--text3);font-style:italic">${s.notas}</div>`:''}
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button class="icon-btn edit" onclick="openSusEdit('${s.id}')" style="flex:1;justify-content:center">✏️</button>
+        <button class="icon-btn del" onclick="deleteSus('${s.id}')" style="flex:1;justify-content:center">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSusModal(){
+  editingSusId=null;
+  document.getElementById('sus-modal-title').textContent='Nueva suscripción';
+  document.getElementById('sm-nombre').value='';
+  document.getElementById('sm-monto').value='';
+  document.getElementById('sm-notas').value='';
+  document.getElementById('sm-dia').value='';
+  document.getElementById('sm-categoria').value='ia';
+  document.getElementById('sm-moneda').value='usd';
+  document.getElementById('sm-frecuencia').value='mensual';
+  document.getElementById('sus-modal-overlay').style.display='flex';
+}
+
+function openSusEdit(id){
+  const s=susData.find(x=>x.id===id);if(!s)return;
+  editingSusId=id;
+  document.getElementById('sus-modal-title').textContent='Editar suscripción';
+  document.getElementById('sm-nombre').value=s.nombre||'';
+  document.getElementById('sm-categoria').value=s.categoria||'otro';
+  document.getElementById('sm-monto').value=s.monto||'';
+  document.getElementById('sm-moneda').value=s.moneda||'usd';
+  document.getElementById('sm-frecuencia').value=s.frecuencia||'mensual';
+  document.getElementById('sm-dia').value=s.dia||'';
+  document.getElementById('sm-notas').value=s.notas||'';
+  document.getElementById('sus-modal-overlay').style.display='flex';
+}
+
+function closeSusModal(){document.getElementById('sus-modal-overlay').style.display='none';}
+function closeSusModalOutside(e){if(e.target===document.getElementById('sus-modal-overlay'))closeSusModal();}
+
+function saveSus(){
+  const nombre=document.getElementById('sm-nombre').value.trim();
+  if(!nombre){toast('Nombre requerido','error');return;}
+  const row={
+    id:editingSusId||uid(),
+    nombre,
+    categoria:document.getElementById('sm-categoria').value,
+    monto:parseFloat(document.getElementById('sm-monto').value)||0,
+    moneda:document.getElementById('sm-moneda').value,
+    frecuencia:document.getElementById('sm-frecuencia').value,
+    dia:parseInt(document.getElementById('sm-dia').value)||0,
+    notas:document.getElementById('sm-notas').value.trim(),
+  };
+  if(editingSusId)susData=susData.map(x=>x.id===editingSusId?row:x);
+  else susData.unshift(row);
+  saveSusData();closeSusModal();renderSus();toast('Guardado ✓','success');
+}
+
+function deleteSus(id){susData=susData.filter(x=>x.id!==id);saveSusData();renderSus();toast('Eliminado','error');}
+
+// ==================== INIT ====================
+load();
+console.log('FreelanceOS init — data.length:', data.length);
+document.getElementById('build-indicator').textContent = '✓ v7 · data:' + data.length;
+
+// Usar seed solo si nunca se guardó nada en localStorage
+if(localStorage.getItem(STORAGE_KEY) === null) {
+  data = [
+    {id:'s01',fecha:'2026-06-06',servicio:'Landing',cliente:'Tomas (mochilas)',cantidad:1,pesos:100000,usd:69,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s02',fecha:'2026-06-11',servicio:'UGC T',cliente:'Fran Asensio (Jinos)',cantidad:18,pesos:360000,usd:248,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s03',fecha:'2026-06-13',servicio:'Creativos',cliente:'Matias (Reloj)',cantidad:6,pesos:74500,usd:51,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s04',fecha:'2026-06-18',servicio:'Creativos',cliente:'Nico (Espuma)',cantidad:6,pesos:50000,usd:35,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s05',fecha:'2026-06-19',servicio:'Creativos',cliente:'Laure (Croma)',cantidad:6,pesos:50000,usd:35,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s06',fecha:'2026-06-20',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s07',fecha:'2026-06-23',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s08',fecha:'2026-06-23',servicio:'UGC T',cliente:'Fran Asensio (Jinos)',cantidad:30,pesos:600000,usd:413,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s09',fecha:'2026-06-24',servicio:'Creativos',cliente:'Laure (Croma)',cantidad:12,pesos:100000,usd:69,estado:'cobrado',vencimiento:'',notas:''},
+    {id:'s10',fecha:'2026-06-26',servicio:'Creativos',cliente:'Rogelio Herrera (iHelfy)',cantidad:15,pesos:108000,usd:75,estado:'cobrado',vencimiento:'',notas:''},
+  ];
+  save();
+}
+
+populateFilters();
+try {
+  renderDashboard();
+} catch(e) {
+  console.error('renderDashboard error:', e);
+  document.getElementById('build-indicator').textContent += ' | ERROR: ' + e.message;
+}
+updateCobrosbage();
+const now=new Date();
+document.getElementById('dash-date-sub').textContent=now.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
+
+// KPI directo con delay para asegurar que nada lo resetea despues
+setTimeout(function(){
+  const tP=data.reduce((a,b)=>a+b.pesos,0);
+  const tU=data.reduce((a,b)=>a+(b.usd||0),0);
+  const tC=data.reduce((a,b)=>a+(b.cantidad||0),0);
+  document.getElementById('kpi-pesos').textContent='$'+tP.toLocaleString('es-AR');
+  document.getElementById('kpi-usd').textContent='U$D '+tU.toLocaleString('es-AR');
+  document.getElementById('kpi-creativos').textContent=tC;
+  document.getElementById('kpi-trabajos').textContent=data.length;
+  document.getElementById('kpi-pesos-sub').textContent=data.length+' trabajos · '+[...new Set(data.map(x=>x.cliente))].length+' clientes';
+  document.getElementById('kpi-usd-sub').textContent='Dólar $'+dolarBlue.toLocaleString('es-AR');
+  document.getElementById('build-indicator').textContent='✓ pesos:'+tP+' d:'+data.length;
+}, 300);
+</script>
+</body>
+</html>
