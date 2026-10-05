@@ -1,4 +1,12 @@
-# Prompts Veo3: arquitectura, plantillas, B-roll, negativos, QA
+# Manual Maestro de Veo3: arquitectura, plantillas, B-roll, negativos, QA
+
+Resumen del Manual Maestro de Maxi. Usalo **solo cuando Maxi pida prompts de Veo3 directos** (el flujo normal es: Claude entrega el guion detallado y ChatGPT arma el prompt de Veo3). Para todo lo demás mandan `SKILL.md`, `reglas-guion.md` y `formato-entrega.md`.
+
+Si algo de acá choca con las reglas de la skill, ganan las de la skill:
+- Producto: usar la frase fija de `productos.md` + "exactly as in the product reference images".
+- Voz: la etiqueta de voz de `formato-entrega.md` / `paises.md`, igual en todos los clips.
+- CTA, precio, envío y talla: según `productos.md` y `paises.md`.
+- Una sola zapatilla por plano cuando hay varias marcas.
 
 ## Índice
 1. Dividir en clips
@@ -32,7 +40,7 @@
 
 1. **OBJECTIVE** — qué clip, quién habla, función narrativa.
 2. **STRICT CONTINUITY** — identidad, vestuario, locación, luz, props/vehículo, estado (BEFORE/AFTER).
-3. **STRICT PRODUCT CONSISTENCY** — bloque del cliente (si el producto es visible).
+3. **STRICT PRODUCT CONSISTENCY** — frase fija de `productos.md` + invariantes (si el producto es visible).
 4. **IMPORTANT** — reglas globales: sin teléfono visible, nunca congelado, el diálogo no se reinicia.
 5. **STORYBOARD RULE** — anti-grid.
 6. **SHOT / MOMENT 1..N** — tiempo, encuadre, acción, manos, mirada, foco, diálogo.

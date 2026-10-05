@@ -1,4 +1,6 @@
-# Avatares, escenarios y masters (prompts de imagen)
+# Avatares, escenarios y masters (prompts de Nano Banana)
+
+Complementa a `prompts.md`: las plantillas base (lookbook, keyframe UGC, selfie, animados) están allá y mandan. Acá está el nivel de detalle que debe tener cada avatar y qué masters generar antes de Veo3. Recordá: avatares distintos por país, edad visible de 55 a 65 con marcas reales, y "no text, no labels".
 
 Antes de Veo3 se fijan visualmente todos los estados críticos del guion. No hay un número fijo de masters: se generan **tantos como el guion necesite**. Cada clip usa como ingrediente el master que corresponde exactamente a su estado narrativo; nunca reutilizar uno incorrecto para ahorrar pasos.
 
@@ -59,7 +61,7 @@ No people [or: background people far and out of focus]. No text. No logos. Not a
 
 ## Ficha de producto
 
-Antes de escribir cualquier clip se redacta la ficha de invariantes del producto (las de SAYU ya están en `clientes/sayu.md`). Para un producto nuevo:
+Antes de escribir cualquier clip se redacta la ficha de invariantes del producto (las frases fijas de SAYU están en `productos.md`). Para un producto nuevo:
 ```
 STRICT PRODUCT CONSISTENCY:
 Use the supplied real [PRODUCT] images as the strict product reference.
